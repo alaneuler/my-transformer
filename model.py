@@ -4,9 +4,10 @@ from ffn import PositionwiseFeedForward
 from decoder import Decoder, DecoderLayer
 from embedding import Embedding
 from encoder import Encoder, EncoderLayer
-from encoder_decoder import EncoderDecoder, Generator
+from encoder_decoder import EncoderDecoder
 from positional_encoding import PositionalEncoding
 from torch import nn
+from utils import Generator
 
 def make_model(src_vocab, tgt_vocab,
                N=6, h=8, d_model=512,
