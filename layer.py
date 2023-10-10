@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torch.nn.functional import log_softmax
 
 class LayerNorm(nn.Module):
     "Construct a layer norm module."
@@ -29,3 +30,16 @@ class SublayerConnection(nn.Module):
 
     def forward(self, x, sublayer):
         return x + self.dropout(sublayer(self.norm(x)))
+
+class Generator(nn.Module):
+    """
+    Define a standard linear + log_softmax generation step.
+    Generator is connected to the output of the decoder.
+    """
+
+    def __init__(self, d_model, vocab):
+        super().__init__()
+        self.proj = nn.Linear(d_model, vocab)
+
+    def forward(self, x):
+        return log_softmax(self.proj(x), dim=-1)

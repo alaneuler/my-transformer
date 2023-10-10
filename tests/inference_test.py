@@ -11,19 +11,18 @@ def inference_test():
     ])
     src_mask = torch.ones(1, 1, 10)
     memory = test_model.encode(src, src_mask)
-    ys = torch.zeros(1, 1).type_as(src)
+    y = torch.zeros(1, 1).type_as(src)
 
     for i in range(9):
-        out = test_model.decode(memory, src_mask, ys,
-                                subsequent_mask(ys.size(1)).type_as(src))
+        out = test_model.decode(memory, src_mask, y,
+                                subsequent_mask(y.size(1)).type_as(src))
         prob = test_model.generator(out[:, -1])
         _, next_word = torch.max(prob, dim=1)
-        next_word = next_word.data[0]
-        ys = torch.cat([
-            ys, torch.empty(1, 1).type_as(src).fill_(next_word)
+        y = torch.cat([
+            y, torch.empty(1, 1).type_as(src).fill_(next_word[0])
         ], dim=1)
     
-    print("Example untrained model prediction:", ys)
+    print("Example untrained model prediction:", y)
 
 for _ in range(10):
     inference_test()

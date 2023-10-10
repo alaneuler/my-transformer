@@ -16,7 +16,7 @@ class Decoder(nn.Module):
         return self.norm(x)
 
 class DecoderLayer(nn.Module):
-    def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
+    def __init__(self, size, self_attn, src_attn, feed_forward, dropout=0.1):
         super().__init__()
         self.size = size
         self.self_attn = self_attn

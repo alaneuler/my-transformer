@@ -19,7 +19,7 @@ class Encoder(nn.Module):
 class EncoderLayer(nn.Module):
     "And encoder layer is made up of self-attention and feed-forward network."
 
-    def __init__(self, size, self_attn, feed_forward, dropout):
+    def __init__(self, size, self_attn, feed_forward, dropout=0.1):
         super().__init__()
         self.size = size
         self.self_attn = self_attn
