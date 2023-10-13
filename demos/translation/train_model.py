@@ -1,6 +1,6 @@
 import torch
 from demos.translation.data_loader import create_data_loaders
-from demos.translation.tokenizer import vocab_src, vocab_tgt
+from demos.translation.tokenizer import padding
 from model import make_model
 from train.data import Batch
 from train.label_smoothing import LabelSmoothing
@@ -8,14 +8,15 @@ from train.learning_rate import rate
 from train.loss import SimpleLossCompute
 from train.routine import run_epoch
 
-def translation_model(d_model, N):
-    return make_model(len(vocab_src), len(vocab_tgt), d_model=d_model, N=N)
+def translation_model(vocab_src_len, vocab_tgt_len, d_model, N):
+    return make_model(vocab_src_len, vocab_tgt_len, d_model=d_model, N=N)
 
 def train_worker(config):
     print("Training process starting...")
+    vocab_src, vocab_tgt = config['vocab_src'], config['vocab_tgt']
 
     # This value equals the index of <blank> in `specials`` when doing build_vocab_from_iterator
-    pad_idx = vocab_tgt["<blank>"]
+    pad_idx = vocab_tgt[padding]
 
     device = config['device']
     batch_size = config['batch_size']
@@ -28,10 +29,12 @@ def train_worker(config):
     accum_iter = config["accum_iter"]
     num_epochs = config['num_epochs']
 
-    model = translation_model(d_model, N)
+    model = translation_model(len(vocab_src), len(vocab_tgt), d_model, N)
     criterion = LabelSmoothing(size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1)
     train_dataloader, valid_dataloader = create_data_loaders(
         device,
+        vocab_src,
+        vocab_tgt,
         batch_size=batch_size,
         max_padding=max_padding,
         is_distributed=is_distributed

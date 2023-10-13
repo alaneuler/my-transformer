@@ -62,14 +62,14 @@ def build_vocabulary(load_data, min_freq=2):
     return vocab_src, vocab_tgt
 
 vocab_path = 'data/vocab.pt'
-def load_vocab():
+def load_vocab(min_freq=2):
     if not os.path.exists(vocab_path):
         def load_data():
             train, val = load_train_val_data()
             test = load_test_data()
             return train, val, test
 
-        vocab_src, vocab_tgt = build_vocabulary(load_data)
+        vocab_src, vocab_tgt = build_vocabulary(load_data, min_freq)
         torch.save((vocab_src, vocab_tgt), vocab_path)
     else:
         print('%s already exists, load from it.' % vocab_path)
@@ -77,5 +77,3 @@ def load_vocab():
 
     print("Vocabulary zh size:", len(vocab_src), 'en size:', len(vocab_tgt))
     return vocab_src, vocab_tgt
-
-vocab_src, vocab_tgt = load_vocab()
