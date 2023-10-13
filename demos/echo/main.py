@@ -4,8 +4,8 @@ import os
 os.environ
 
 from demos.echo.data import data_gen
-from demos.echo.generate import greedy_decode
-from demos.echo.loss import SimpleLossCompute
+from inference.greedy import greedy_decode
+from train.loss import SimpleLossCompute
 from model import make_model
 from torch.optim.lr_scheduler import LambdaLR
 from train.label_smoothing import LabelSmoothing

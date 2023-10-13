@@ -2,7 +2,7 @@ import os
 import spacy
 import torch
 from itertools import chain
-from load_data import load_data
+from data_source import load_test_data, load_train_val_data
 from torchtext.vocab import build_vocab_from_iterator
 
 def load_tokenizers():
@@ -20,32 +20,34 @@ def load_tokenizers():
 
     return spacy_zh, spacy_en
 
+spacy_zh, spacy_en = load_tokenizers()
+
 def tokenize(text, tokenizer):
     return [tok.text for tok in tokenizer.tokenizer(text)]
+
+def tokenize_zh(text):
+    return tokenize(text, spacy_zh)
+def tokenize_en(text):
+    return tokenize(text, spacy_en)
 
 def yield_tokens(data_iter, tokenizer, index):
     for from_to_tuple in data_iter:
         yield tokenizer(from_to_tuple[index])
 
-def build_vocabulary(spacy_zh, spacy_en):
-    def tokenize_zh(text):
-        return tokenize(text, spacy_zh)
-
-    def tokenize_en(text):
-        return tokenize(text, spacy_en)
-
-    # train has size 2000, and val has size 100
+def build_vocabulary():
     print("Building Chinese Vocabulary...")
-    train, val = load_data(0, 2000), load_data(2000, 2100)
+    train, val = load_train_val_data()
+    test = load_test_data()
     vocab_src = build_vocab_from_iterator(
-        yield_tokens(chain(train, val), tokenize_zh, index=0),
+        yield_tokens(chain(train, val, test), tokenize_zh, index=0),
         min_freq=2,
         specials=['<s>', '</s>', '<blank>', '<unk>']
     )
     print("Building English Vocabulary...")
-    train, val = load_data(0, 2000), load_data(2000, 2100)
+    train, val = load_train_val_data()
+    test = load_test_data()
     vocab_tgt = build_vocab_from_iterator(
-        yield_tokens(chain(train, val), tokenize_en, index=1),
+        yield_tokens(chain(train, val, test), tokenize_en, index=1),
         min_freq=2,
         specials=['<s>', '</s>', '<blank>', '<unk>']
     )
@@ -55,15 +57,15 @@ def build_vocabulary(spacy_zh, spacy_en):
     return vocab_src, vocab_tgt
 
 vocab_path = 'data/vocab.pt'
-def load_vocab(spacy_zh, spacy_en):
+def load_vocab():
     if not os.path.exists(vocab_path):
-        vocab_src, vocab_tgt = build_vocabulary(spacy_zh, spacy_en)
+        vocab_src, vocab_tgt = build_vocabulary()
         torch.save((vocab_src, vocab_tgt), vocab_path)
     else:
+        print('%s already exists, load from it.' % vocab_path)
         vocab_src, vocab_tgt = torch.load(vocab_path)
 
     print("Vocabulary zh size:", len(vocab_src), 'en size:', len(vocab_tgt))
     return vocab_src, vocab_tgt
 
-spacy_de, spacy_en = load_tokenizers()
-vocab_src, vocab_tgt = load_vocab(spacy_de, spacy_en)
+vocab_src, vocab_tgt = load_vocab()

@@ -24,7 +24,7 @@ def run_epoch(model, data_iter, loss_compute,
         tokens += batch.ntokens
         total_token += batch.ntokens
         total_loss += loss
-        if i % 5 == 0 and mode == 'train':
+        if i % accum_iter == 0 and mode == 'train':
             lr = optimizer.param_groups[0]['lr']
             elapsed = time.time() - start
             print((
