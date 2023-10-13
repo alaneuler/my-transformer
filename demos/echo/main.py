@@ -1,8 +1,4 @@
 import torch
-
-import os
-os.environ
-
 from demos.echo.data import data_gen
 from inference.greedy import greedy_decode
 from train.loss import SimpleLossCompute
