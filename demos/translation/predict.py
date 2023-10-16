@@ -1,8 +1,24 @@
 import torch
 from demos.translation.data_loader import create_data_loader
-from demos.translation.tokenizer import bs, padding
+from demos.translation.tokenizer import bs, eos, padding
 from inference.greedy import greedy_decode
 from train.data import Batch
+
+def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
+    result = ''
+    for x in model_output:
+        if x == pad_idx:
+            continue
+        chr = vocab_tgt.get_itos()[x]
+        if chr == eos:
+            break
+        if chr == bs:
+            continue
+        if chr == ',' or chr == '.':
+            result += chr
+        else:
+            result += ' ' + chr
+    return result
 
 def predict(model, config):
     vocab_src, vocab_tgt = config['vocab_src'], config['vocab_tgt']
@@ -19,8 +35,6 @@ def predict(model, config):
     for i, test_item in enumerate(data_loader):
         b = Batch(test_item[0], test_item[1], pad_idx)
         output = greedy_decode(model, b.src, b.src_mask, vocab_tgt[bs], max_padding)
-        text = ' '.join(
-            [vocab_tgt.get_itos()[x] for x in output[0] if x != pad_idx]
-        ).split('</s>', 1)[0]
+        text = concatenate_result(output[0], vocab_tgt, bs, eos, pad_idx)
         print("Translation of:", test_iter[i][0])
-        print(text[4:].replace(' ,', ',').replace(' .', '.'))
+        print(text)
