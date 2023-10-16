@@ -1,5 +1,6 @@
 from torch import nn
 
+
 class PositionwiseFeedForward(nn.Module):
     def __init__(self, d_model, d_ff, dropout=0.1):
         super().__init__()

@@ -1,6 +1,8 @@
-from layer import LayerNorm, SublayerConnection
 from torch import nn
+
+from layer import LayerNorm, SublayerConnection
 from utils import clones
+
 
 class Encoder(nn.Module):
     "Encoder is a stack of N layers."
@@ -9,13 +11,14 @@ class Encoder(nn.Module):
         super().__init__()
         self.layers = clones(layer, N)
         self.norm = LayerNorm(layer.size)
-    
+
     def forward(self, x, mask):
         for layer in self.layers:
             x = layer(x, mask)
         # The norm operation is not present in the original paper.
         return self.norm(x)
-    
+
+
 class EncoderLayer(nn.Module):
     "And encoder layer is made up of self-attention and feed-forward network."
 

@@ -1,17 +1,18 @@
 import torch
 from torch import nn
 
+
 class LabelSmoothing(nn.Module):
     def __init__(self, size, padding_idx=0, smoothing=0.0):
         super().__init__()
-        self.criterion = nn.KLDivLoss(reduction='sum')
+        self.criterion = nn.KLDivLoss(reduction="sum")
         self.padding_idx = padding_idx
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
         self.size = size
         # Saving the true_dist is rather a hack way
         self.true_dist = None
-    
+
     def forward(self, x, target):
         assert x.size(1) == self.size
         true_dist = x.clone()

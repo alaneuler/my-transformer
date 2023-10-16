@@ -1,5 +1,7 @@
 import torch
+
 from train.data import Batch
+
 
 def data_gen(V, batch_size, n_batches):
     for i in range(n_batches):

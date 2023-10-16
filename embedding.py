@@ -1,6 +1,8 @@
 import math
+
 import torch
 from torch import nn
+
 
 class Embedding(nn.Module):
     def __init__(self, d_model, vocab):

@@ -1,6 +1,8 @@
 import math
+
 import torch
 from torch import nn
+
 
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, dropout=0.1, max_len=5000):
@@ -15,8 +17,8 @@ class PositionalEncoding(nn.Module):
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)
         # pe is of size (1, max_len, d_model)
-        self.register_buffer('pe', pe)
+        self.register_buffer("pe", pe)
 
     def forward(self, x):
-        x = x + self.pe[:, :x.size(1)].requires_grad_(False)
+        x = x + self.pe[:, : x.size(1)].requires_grad_(False)
         return self.dropout(x)

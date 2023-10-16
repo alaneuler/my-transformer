@@ -1,6 +1,8 @@
-from layer import LayerNorm, SublayerConnection
 from torch import nn
+
+from layer import LayerNorm, SublayerConnection
 from utils import clones
+
 
 class Decoder(nn.Module):
     "Decoder is a stack of N layers."
@@ -14,6 +16,7 @@ class Decoder(nn.Module):
         for layer in self.layers:
             x = layer(x, memory, src_mask, tgt_mask)
         return self.norm(x)
+
 
 class DecoderLayer(nn.Module):
     def __init__(self, size, self_attn, src_attn, feed_forward, dropout=0.1):

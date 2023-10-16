@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.nn.functional import log_softmax
 
+
 class LayerNorm(nn.Module):
     "Construct a layer norm module."
 
@@ -17,6 +18,7 @@ class LayerNorm(nn.Module):
         std = x.std(-1, keepdim=True)
         return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
 
+
 class SublayerConnection(nn.Module):
     """
     A residual connection.
@@ -30,6 +32,7 @@ class SublayerConnection(nn.Module):
 
     def forward(self, x, sublayer):
         return x + self.dropout(sublayer(self.norm(x)))
+
 
 class Generator(nn.Module):
     """

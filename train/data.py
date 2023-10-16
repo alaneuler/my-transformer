@@ -1,5 +1,6 @@
 from utils import subsequent_mask
 
+
 class Batch:
     "Object for holding a batch of data with mask during training."
 

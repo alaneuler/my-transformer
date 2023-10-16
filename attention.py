@@ -1,7 +1,10 @@
 import math
+
 import torch
 from torch import nn
+
 from utils import clones
+
 
 def attention(query, key, value, mask=None, dropout=None):
     "The returned tensor is of size (batch_size, 8, seq_len, d_k)."
@@ -17,6 +20,7 @@ def attention(query, key, value, mask=None, dropout=None):
     if dropout is not None:
         p_attn = dropout(p_attn)
     return torch.matmul(p_attn, value)
+
 
 class MultiHeadedAttention(nn.Module):
     def __init__(self, h, d_model, dropout=0.1):

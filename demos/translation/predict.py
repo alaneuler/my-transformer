@@ -1,11 +1,13 @@
 import torch
+
 from demos.translation.data_loader import create_data_loader
 from demos.translation.tokenizer import bs, eos, padding
 from inference.greedy import greedy_decode
 from train.data import Batch
 
+
 def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
-    result = ''
+    result = ""
     for x in model_output:
         if x == pad_idx:
             continue
@@ -14,23 +16,22 @@ def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
             break
         if chr == bs:
             continue
-        if chr == ',' or chr == '.':
+        if chr == "," or chr == ".":
             result += chr
         else:
-            result += ' ' + chr
+            result += " " + chr
     return result
 
+
 def predict(model, config):
-    vocab_src, vocab_tgt = config['vocab_src'], config['vocab_tgt']
-    max_padding = config['max_padding']
+    vocab_src, vocab_tgt = config["vocab_src"], config["vocab_tgt"]
+    max_padding = config["max_padding"]
 
     pad_idx = vocab_tgt[padding]
-    test_iter = [
-        ('当然，现在的情况和1989年的情况明显不同了。', ''),
-        ('当富人不再那么富了，穷人就会更穷。', '')
-    ]
-    data_loader = create_data_loader(test_iter, torch.device('cpu'),
-                                     vocab_src, vocab_tgt, 1)
+    test_iter = [("当然，现在的情况和1989年的情况明显不同了。", ""), ("当富人不再那么富了，穷人就会更穷。", "")]
+    data_loader = create_data_loader(
+        test_iter, torch.device("cpu"), vocab_src, vocab_tgt, 1
+    )
 
     for i, test_item in enumerate(data_loader):
         b = Batch(test_item[0], test_item[1], pad_idx)
