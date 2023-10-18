@@ -4,9 +4,11 @@ from demos.translation.tokenizer import build_vocabulary, tokenize_zh
 def token_index():
     vocab_src, vocab_tgt = build_vocabulary(
         lambda: (
-            [("今天天气不错。", "The weather is nice today."),
-             ("你好！", "Hello!"),
-             ("我是一个学生。", "I am a student.")],
+            [
+                ("今天天气不错。", "The weather is nice today."),
+                ("你好！", "Hello!"),
+                ("我是一个学生。", "I am a student."),
+            ],
             [],
             [],
         ),
