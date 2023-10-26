@@ -1,7 +1,8 @@
 The code comes from [The Annotated Transformer](https://nlp.seas.harvard.edu/annotated-transformer/).
 
 The train data comes from [EMNLP 2018](https://statmt.org/wmt18/translation-task.html). The English to Chinese task:
-```
+
+```bash
 cd data
 wget http://data.statmt.org/wmt18/translation-task/training-parallel-nc-v13.tgz
 tar xvf training-parallel-nc-v13.tgz
