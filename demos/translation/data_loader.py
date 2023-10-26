@@ -30,7 +30,7 @@ def collate_batch(
             )
 
     src_list, tgt_list = [], []
-    for (_src, _tgt) in batch:
+    for _src, _tgt in batch:
         src_tokens = tokenize_zh(_src)
         src_tokens_idx = vocab_src(src_tokens)
         check_tokens(src_tokens, src_tokens_idx)
