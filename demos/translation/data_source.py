@@ -1,16 +1,12 @@
 zh_file_path = "data/zh-en/news-commentary-v13.zh-en.zh"
 en_file_path = "data/zh-en/news-commentary-v13.zh-en.en"
 
-train_size = 100
-val_size = 10
-test_size = 2
 
-
-def load_train_val_data():
+def load_train_val_data(train_size: int, val_size: int):
     return load_data(0, train_size), load_data(train_size, train_size + val_size)
 
 
-def load_test_data():
+def load_test_data(train_size: int, val_size: int, test_size: int):
     return load_data(train_size + val_size, train_size + val_size + test_size)
 
 

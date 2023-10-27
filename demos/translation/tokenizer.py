@@ -73,12 +73,18 @@ def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
     return vocab_src, vocab_tgt
 
 
-def load_vocab(vocab_path: str, min_freq: int = 2) -> Tuple[Vocab, Vocab]:
+def load_vocab(
+    vocab_path: str,
+    training_size: int,
+    val_size: int,
+    test_size: int,
+    min_freq: int = 2,
+) -> Tuple[Vocab, Vocab]:
     if not os.path.exists(vocab_path):
 
         def load_data():
-            train, val = load_train_val_data()
-            test = load_test_data()
+            train, val = load_train_val_data(training_size, val_size)
+            test = load_test_data(training_size, val_size, test_size)
             return train, val, test
 
         vocab_src, vocab_tgt = build_vocabulary(load_data, min_freq)

@@ -45,3 +45,9 @@ class TrainingArguments:
     base_lr: float = field(default=1.0, metadata={"help": "Base learning rate"})
 
     warmup: int = field(default=3000, metadata={"help": "Warmup steps"})
+
+    training_size: int = field(metadata={"help": "Training set size"})
+
+    validation_size: int = field(metadata={"help": "Validation set size"})
+
+    test_size: int = field(metadata={"help": "Test set size"})

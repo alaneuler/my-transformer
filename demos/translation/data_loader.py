@@ -98,9 +98,16 @@ def create_data_loader(
 
 
 def create_data_loaders(
-    device, vocab_src, vocab_tgt, batch_size=100, max_padding=128, is_distributed=False
+    device,
+    vocab_src,
+    vocab_tgt,
+    train_size: int,
+    val_size: int,
+    batch_size=100,
+    max_padding=128,
+    is_distributed=False,
 ):
-    train_iter, val_iter = load_train_val_data()
+    train_iter, val_iter = load_train_val_data(train_size, val_size)
     train_data_loader = create_data_loader(
         train_iter,
         device,
