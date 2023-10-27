@@ -1,9 +1,10 @@
 import os
 from itertools import chain
+from typing import Tuple
 
 import spacy
 import torch
-from torchtext.vocab import build_vocab_from_iterator
+from torchtext.vocab import Vocab, build_vocab_from_iterator
 
 from demos.translation.data_source import load_test_data, load_train_val_data
 
@@ -50,7 +51,7 @@ def yield_tokens(data_iter, tokenizer, index):
         yield tokenizer(from_to_tuple[index])
 
 
-def build_vocabulary(load_data, min_freq=2):
+def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
     print("Building Chinese Vocabulary...")
     train, val, test = load_data()
     vocab_src = build_vocab_from_iterator(
@@ -72,10 +73,7 @@ def build_vocabulary(load_data, min_freq=2):
     return vocab_src, vocab_tgt
 
 
-vocab_path = "data/vocab.pt"
-
-
-def load_vocab(min_freq=2):
+def load_vocab(vocab_path: str, min_freq: int = 2) -> Tuple[Vocab, Vocab]:
     if not os.path.exists(vocab_path):
 
         def load_data():

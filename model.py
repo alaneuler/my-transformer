@@ -13,7 +13,9 @@ from positional_encoding import PositionalEncoding
 from utils import model_parameter_size
 
 
-def make_model(src_vocab, tgt_vocab, N=6, h=8, d_model=512, d_ff=2048, dropout=0.1):
+def make_model(
+    src_vocab, tgt_vocab, N=6, h=8, d_model=512, d_ff=2048, dropout=0.1
+) -> EncoderDecoder:
     c = copy.deepcopy
     attn = MultiHeadedAttention(h, d_model)
     ff = PositionwiseFeedForward(d_model, d_ff, dropout)

@@ -2,35 +2,26 @@ import os
 
 import torch
 
+# transformers is used only for argument parsing
+from transformers import HfArgumentParser
+
+from demos.translation.arguments import ModelArguments, TrainingArguments
+from demos.translation.load_model import load_model
 from demos.translation.predict import predict
 from demos.translation.tokenizer import load_vocab
 from demos.translation.train_model import train_model, translation_model
 
-model_path = "models/zh_en_final.pt"
-d_model = 512
-N = 2
-min_vocab_freq = 1
-vocab_src, vocab_tgt = load_vocab(min_vocab_freq)
-config = {
-    "d_model": d_model,
-    "N": N,
-    "device": torch.device("cpu"),
-    "batch_size": 2,
-    "distributed": False,
-    "num_epochs": 30,
-    "accum_iter": 1,
-    "base_lr": 0.1,
-    "max_padding": 72,
-    "warmup": 10,
-    "model_path": model_path,
-    "vocab_src": vocab_src,
-    "vocab_tgt": vocab_tgt,
-}
+parser = HfArgumentParser((ModelArguments, TrainingArguments))
+model_args, training_args = parser.parse_args_into_dataclasses()
+print(model_args)
+print(training_args)
 
-if not os.path.exists(model_path):
-    train_model(config)
+vocab_src, vocab_tgt = load_vocab(model_args.vocab_path, model_args.min_vocab_freq)
+if not os.path.exists(model_args.model_path):
+    print(f"Model {model_args.model_path} does not exist, needs to train.")
+    model = train_model(training_args)
+else:
+    print(f"Model {model_args.model_path} already exists, load from it.")
+    model = load_model(model_args, vocab_src, vocab_tgt)
 
-model = translation_model(len(vocab_src), len(vocab_tgt), d_model, N)
-model.load_state_dict(torch.load(model_path))
-
-predict(model, config)
+predict(model, model_args, vocab_src, vocab_tgt)

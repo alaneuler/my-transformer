@@ -1,5 +1,8 @@
 import torch
+from torch import nn
+from torchtext.vocab import Vocab
 
+from demos.translation.arguments import ModelArguments, TrainingArguments
 from demos.translation.data_loader import create_data_loaders
 from demos.translation.tokenizer import padding
 from model import make_model
@@ -10,46 +13,45 @@ from train.loss import SimpleLossCompute
 from train.routine import run_epoch
 
 
-def translation_model(vocab_src_len, vocab_tgt_len, d_model, N):
+def translation_model(vocab_src_len, vocab_tgt_len, d_model, N) -> nn.Module:
     return make_model(vocab_src_len, vocab_tgt_len, d_model=d_model, N=N)
 
 
-def train_worker(config):
-    print("Training process starting...")
-    vocab_src, vocab_tgt = config["vocab_src"], config["vocab_tgt"]
+def train_worker(
+    model_args: ModelArguments,
+    training_args: TrainingArguments,
+    vocab_src: Vocab,
+    vocab_tgt: Vocab,
+) -> nn.Module:
+    device = torch.device(training_args.device)
+    print(f"Training process starting, using {device} device.")
 
     # This value equals the index of <blank> in `specials`` when doing build_vocab_from_iterator
     pad_idx = vocab_tgt[padding]
 
-    device = config["device"]
-    batch_size = config["batch_size"]
-    max_padding = config["max_padding"]
-    d_model = config["d_model"]
-    N = config["N"]
-    is_distributed = config["distributed"]
-    lr = config["base_lr"]
-    warmup = config["warmup"]
-    accum_iter = config["accum_iter"]
-    num_epochs = config["num_epochs"]
-
-    model = translation_model(len(vocab_src), len(vocab_tgt), d_model, N)
+    model = translation_model(
+        len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
+    )
     criterion = LabelSmoothing(size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1)
     train_dataloader, valid_dataloader = create_data_loaders(
         device,
         vocab_src,
         vocab_tgt,
-        batch_size=batch_size,
-        max_padding=max_padding,
-        is_distributed=is_distributed,
+        batch_size=training_args.batch_size,
+        max_padding=model_args.max_padding,
     )
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.98), eps=1e-9)
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=training_args.base_lr, betas=(0.9, 0.98), eps=1e-9
+    )
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer=optimizer,
-        lr_lambda=lambda step: rate(step, d_model, factor=0.1, warmup=warmup),
+        lr_lambda=lambda step: rate(
+            step, model_args.d_model, factor=0.1, warmup=training_args.warmup
+        ),
     )
     loss_compute = SimpleLossCompute(model.generator, criterion)
 
-    for epoch in range(num_epochs):
+    for epoch in range(training_args.num_epochs):
         print("Epoch:", epoch)
         model.train()
         run_epoch(
@@ -59,7 +61,7 @@ def train_worker(config):
             optimizer,
             lr_scheduler,
             mode="train",
-            accum_iter=accum_iter,
+            accum_iter=training_args.accum_iter,
         )
 
         model.eval()
@@ -74,15 +76,28 @@ def train_worker(config):
         print("Validation Average Loss: %.2f" % (total_loss / total_token))
 
     print("Training process finished.")
-    torch.save(model.state_dict(), config["model_path"])
+    torch.save(model.state_dict(), model_args.model_path)
+    return model
 
 
-def train_distributed_model(config):
+def train_distributed_model(
+    model_args: ModelArguments,
+    training_args: TrainingArguments,
+    vocab_src: Vocab,
+    vocab_tgt: Vocab,
+) -> nn.Module:
     raise NotImplementedError
 
 
-def train_model(config):
-    if config["distributed"]:
-        train_distributed_model(config)
+def train_model(
+    model_args: ModelArguments,
+    training_args: TrainingArguments,
+    vocab_src: Vocab,
+    vocab_tgt: Vocab,
+) -> nn.Module:
+    if training_args.distributed:
+        print(f"Distributed mode is enabled, training in parallel.")
+        model = train_distributed_model(model_args, training_args, vocab_src, vocab_tgt)
     else:
-        train_worker(config)
+        model = train_worker(model_args, training_args, vocab_src, vocab_tgt)
+    return model
