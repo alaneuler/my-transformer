@@ -3,13 +3,19 @@ from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from torchtext.data.functional import to_map_style_dataset
+from torchtext.vocab import Vocab
 
 from demos.translation.data_source import load_train_val_data
 from demos.translation.tokenizer import bs, eos, padding, tokenize_en, tokenize_zh, unk
 
 
 def collate_batch(
-    batch, device, vocab_src, vocab_tgt, max_padding=128, should_check_tokens=True
+    batch,
+    device,
+    vocab_src: Vocab,
+    vocab_tgt: Vocab,
+    max_padding=128,
+    should_check_tokens=True,
 ):
     bs_idx = torch.tensor([vocab_src[bs]], device=device)
     eos_idx = torch.tensor([vocab_src[eos]], device=device)

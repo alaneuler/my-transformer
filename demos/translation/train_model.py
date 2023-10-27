@@ -37,6 +37,8 @@ def train_worker(
         device,
         vocab_src,
         vocab_tgt,
+        training_args.training_size,
+        training_args.validation_size,
         batch_size=training_args.batch_size,
         max_padding=model_args.max_padding,
     )

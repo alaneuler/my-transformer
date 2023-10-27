@@ -27,7 +27,10 @@
             },
             "args": [
                 "--model_path", "models/zh_en_final.pt",
-                "--distributed", "false"
+                "--distributed", "false",
+                "--training_size", "250000",
+                "--validation_size", "2000",
+                "--test_size", "777"
             ]
         }
     ]

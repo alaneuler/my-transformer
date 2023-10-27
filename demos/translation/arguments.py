@@ -28,6 +28,12 @@ class ModelArguments:
 
 @dataclass
 class TrainingArguments:
+    training_size: int = field(metadata={"help": "Training set size"})
+
+    validation_size: int = field(metadata={"help": "Validation set size"})
+
+    test_size: int = field(metadata={"help": "Test set size"})
+
     device: str = field(default="cuda", metadata={"help": "Device for training"})
 
     batch_size: int = field(default=32, metadata={"help": "Training batch size"})
@@ -45,9 +51,3 @@ class TrainingArguments:
     base_lr: float = field(default=1.0, metadata={"help": "Base learning rate"})
 
     warmup: int = field(default=3000, metadata={"help": "Warmup steps"})
-
-    training_size: int = field(metadata={"help": "Training set size"})
-
-    validation_size: int = field(metadata={"help": "Validation set size"})
-
-    test_size: int = field(metadata={"help": "Test set size"})
