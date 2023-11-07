@@ -23,3 +23,17 @@ def model_parameter_size(model: nn.Module):
         if p.requires_grad:
             trainable_params += p.numel()
     return total_params, trainable_params
+
+
+class GeneratorWithLength:
+    "A generator contains length information, mainly for tqdm."
+
+    def __init__(self, iter, length):
+        self.iter = iter
+        self.length = length
+
+    def __iter__(self):
+        return self.iter
+
+    def __len__(self):
+        return self.length

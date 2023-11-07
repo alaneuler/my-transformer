@@ -1,5 +1,7 @@
 import time
 
+from tqdm import tqdm
+
 
 def run_epoch(model, data_iter, loss_compute, optimizer, scheduler, mode, accum_iter=1):
     tokens = 0
@@ -8,7 +10,7 @@ def run_epoch(model, data_iter, loss_compute, optimizer, scheduler, mode, accum_
     accum_step = 0
 
     start = time.time()
-    for i, batch in enumerate(data_iter):
+    for i, batch in enumerate(tqdm(data_iter)):
         out = model.forward(batch.src, batch.tgt, batch.src_mask, batch.tgt_mask)
         loss, loss_node = loss_compute(out, batch.tgt_y, batch.ntokens)
 
