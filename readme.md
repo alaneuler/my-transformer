@@ -1,6 +1,11 @@
 # My-Transformer
 The code comes from [The Annotated Transformer](https://nlp.seas.harvard.edu/annotated-transformer/).
 
+## Testing
+```bash
+PYTHONPATH=. pytest tests/translation/tokens_test.py::test_try_tokenizer -s
+```
+
 ## Translation Model
 Uses tokenizers from [spacy](https://spacy.io):
 - zh_core_web_sm for Chinese

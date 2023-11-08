@@ -1,8 +1,8 @@
-from demos.translation.tokenizer import tokenize_zh
-from demos.translation.vocab import build_vocabulary
+from demos.translation.tokenizer import tokenize_en, tokenize_zh
+from demos.translation.vocab import bs, build_vocabulary
 
 
-def token_index():
+def test_token_index():
     vocab_src, vocab_tgt = build_vocabulary(
         lambda: (
             [
@@ -13,13 +13,10 @@ def token_index():
         ),
         min_freq=1,
     )
-    assert vocab_src.get_itos()[vocab_src["<s>"]] == "<s>"
-    print(vocab_src["<s>"])
-    print(vocab_src.get_itos())
-    print(vocab_tgt.get_itos())
-    print(vocab_src.get_stoi())
-    print(vocab_tgt.get_stoi())
+    assert vocab_src.get_itos()[vocab_src[bs]] == bs
 
 
-token_index()
-print(tokenize_zh("我是一个学生。"))
+def test_try_tokenizer():
+    print(tokenize_zh("我是一个学生。"))
+    print(tokenize_en("What's your name?"))
+    print(tokenize_en("You're the only one."))
