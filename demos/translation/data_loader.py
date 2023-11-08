@@ -6,7 +6,14 @@ from torchtext.data.functional import to_map_style_dataset
 from torchtext.vocab import Vocab
 
 from demos.translation.data_source import load_train_val_data
-from demos.translation.tokenizer import bs, eos, padding, tokenize_en, tokenize_zh, unk
+from demos.translation.tokenizer import (
+    bs,
+    eos,
+    padding,
+    tokenize_en,
+    tokenize_zh,
+    unk,
+)
 
 
 def collate_batch(
@@ -32,7 +39,8 @@ def collate_batch(
             )
         if unk_idx in tokens_idx:
             raise RuntimeError(
-                f"unk token in tokens\ntokens: {tokens}\ntokens_idx: {tokens_idx}"
+                f"unk token in tokens\ntokens: {tokens}\n"
+                + "tokens_idx: {tokens_idx}"
             )
 
     src_list, tgt_list = [], []
@@ -66,10 +74,18 @@ def collate_batch(
             ]
         )
         src_list.append(
-            pad(processed_src, (0, max_padding - len(processed_src)), value=padding_idx)
+            pad(
+                processed_src,
+                (0, max_padding - len(processed_src)),
+                value=padding_idx,
+            )
         )
         tgt_list.append(
-            pad(processed_tgt, (0, max_padding - len(processed_tgt)), value=padding_idx)
+            pad(
+                processed_tgt,
+                (0, max_padding - len(processed_tgt)),
+                value=padding_idx,
+            )
         )
 
     src = torch.stack(src_list)
@@ -124,6 +140,12 @@ def create_data_loaders(
         is_distributed,
     )
     val_data_loader = create_data_loader(
-        val_iter, device, vocab_src, vocab_tgt, batch_size, max_padding, is_distributed
+        val_iter,
+        device,
+        vocab_src,
+        vocab_tgt,
+        batch_size,
+        max_padding,
+        is_distributed,
     )
     return train_data_loader, val_data_loader

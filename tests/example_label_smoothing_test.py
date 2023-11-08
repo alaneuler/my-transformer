@@ -37,7 +37,9 @@ def example_label_smoothing():
         .encode(
             alt.X("Column:O", title=None),
             alt.Y("Row:O", title=None),
-            alt.Color("Target Distribution:Q", scale=alt.Scale(scheme="viridis")),
+            alt.Color(
+                "Target Distribution:Q", scale=alt.Scale(scheme="viridis")
+            ),
         )
     )
     chart.save("output/example_label_smoothing.png", ppi=320)

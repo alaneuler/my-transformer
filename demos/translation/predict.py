@@ -25,7 +25,9 @@ def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
     return result
 
 
-def predict(model, model_args: ModelArguments, vocab_src: Vocab, vocab_tgt: Vocab):
+def predict(
+    model, model_args: ModelArguments, vocab_src: Vocab, vocab_tgt: Vocab
+):
     pad_idx = vocab_tgt[padding]
     test_iter = [("当然，现在的情况和1989年的情况明显不同了。", ""), ("当富人不再那么富了，穷人就会更穷。", "")]
     data_loader = create_data_loader(

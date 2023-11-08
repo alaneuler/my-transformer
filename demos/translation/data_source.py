@@ -22,7 +22,7 @@ def load_data(start: int, end: int):
 
 
 def do_load_data(start: int, end: int) -> Iterator[Tuple[str, str]]:
-    "Return type is a list of tuple in format (Chinese sentence, English sentence)."
+    "Return type is a list of tuple in format: (Chinese, English)."
     with open(zh_file_path, "r") as zh_file, open(en_file_path, "r") as en_file:
         for i, (zh_line, en_line) in enumerate(zip(zh_file, en_file)):
             if i < start:

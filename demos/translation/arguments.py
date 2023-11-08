@@ -8,9 +8,13 @@ class ModelArguments:
         metadata={"help": "Path to transformer model"},
     )
 
-    d_model: int = field(default=512, metadata={"help": "Activation vector size"})
+    d_model: int = field(
+        default=512, metadata={"help": "Activation vector size"}
+    )
 
-    N: int = field(default=6, metadata={"help": "Stack size of encoder and decoder"})
+    N: int = field(
+        default=6, metadata={"help": "Stack size of encoder and decoder"}
+    )
 
     vocab_path: str = field(
         default="data/vocab.pt", metadata={"help": "Vocabulary path"}
@@ -34,9 +38,13 @@ class TrainingArguments:
 
     test_size: int = field(metadata={"help": "Test set size"})
 
-    device: str = field(default="cuda", metadata={"help": "Device for training"})
+    device: str = field(
+        default="cuda", metadata={"help": "Device for training"}
+    )
 
-    batch_size: int = field(default=32, metadata={"help": "Training batch size"})
+    batch_size: int = field(
+        default=32, metadata={"help": "Training batch size"}
+    )
 
     distributed: bool = field(
         default=True, metadata={"help": "Is the training distributed"}
@@ -45,7 +53,8 @@ class TrainingArguments:
     num_epochs: int = field(default=8, metadata={"help": "Number of epoch"})
 
     accum_iter: int = field(
-        default=10, metadata={"help": "Number of iterations to accumulate gradient"}
+        default=10,
+        metadata={"help": "Number of iterations to accumulate gradient"},
     )
 
     base_lr: float = field(default=1.0, metadata={"help": "Base learning rate"})

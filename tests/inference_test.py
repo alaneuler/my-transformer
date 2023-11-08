@@ -19,7 +19,9 @@ def inference_test():
         )
         prob = test_model.generator(out[:, -1])
         _, next_word = torch.max(prob, dim=1)
-        y = torch.cat([y, torch.empty(1, 1).type_as(src).fill_(next_word[0])], dim=1)
+        y = torch.cat(
+            [y, torch.empty(1, 1).type_as(src).fill_(next_word[0])], dim=1
+        )
 
     print("Example untrained model prediction:", y)
 

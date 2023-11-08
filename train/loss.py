@@ -6,7 +6,9 @@ class SimpleLossCompute:
     def __call__(self, x, y, norm):
         x = self.generator(x)
         sloss = (
-            self.criterion(x.contiguous().view(-1, x.size(-1)), y.contiguous().view(-1))
+            self.criterion(
+                x.contiguous().view(-1, x.size(-1)), y.contiguous().view(-1)
+            )
             / norm
         )
         return sloss.data * norm, sloss

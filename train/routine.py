@@ -3,7 +3,9 @@ import time
 from tqdm import tqdm
 
 
-def run_epoch(model, data_iter, loss_compute, optimizer, scheduler, mode, accum_iter=1):
+def run_epoch(
+    model, data_iter, loss_compute, optimizer, scheduler, mode, accum_iter=1
+):
     tokens = 0
     total_loss = 0
     total_token = 0
@@ -11,7 +13,9 @@ def run_epoch(model, data_iter, loss_compute, optimizer, scheduler, mode, accum_
 
     start = time.time()
     for i, batch in enumerate(tqdm(data_iter)):
-        out = model.forward(batch.src, batch.tgt, batch.src_mask, batch.tgt_mask)
+        out = model.forward(
+            batch.src, batch.tgt, batch.src_mask, batch.tgt_mask
+        )
         loss, loss_node = loss_compute(out, batch.tgt_y, batch.ntokens)
 
         if mode == "train":
@@ -29,10 +33,8 @@ def run_epoch(model, data_iter, loss_compute, optimizer, scheduler, mode, accum_
             lr = optimizer.param_groups[0]["lr"]
             elapsed = time.time() - start
             print(
-                (
-                    "  Step: %3d | Accum: %3d | Loss: %4.2f | Tokens/Sec: %7.1f | LR: %4.2e"
-                )
-                % (i, accum_step, loss / batch.ntokens, tokens / elapsed, lr)
+                "  Step: %3d | Loss: %4.2f | Tokens/Sec: %7.1f | LR: %4.2e"
+                % (i, loss / batch.ntokens, tokens / elapsed, lr)
             )
             start = time.time()
             tokens = 0

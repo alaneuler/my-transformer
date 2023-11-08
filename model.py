@@ -32,7 +32,7 @@ def make_model(
         if p.dim() > 1:
             nn.init.xavier_uniform_(p)
 
-    # total_params, trainable_params = model_parameter_size(model)
-    # print('Total parameters:', total_params)
-    # print('Trainable parameters:', trainable_params)
+    total_params, trainable_params = model_parameter_size(model)
+    print("Total parameters:", total_params)
+    print("Trainable parameters:", trainable_params)
     return model

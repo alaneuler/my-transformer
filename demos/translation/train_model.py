@@ -26,13 +26,16 @@ def train_worker(
     device = torch.device(training_args.device)
     print(f"Training process starting, using {device} device.")
 
-    # This value equals the index of <blank> in `specials`` when doing build_vocab_from_iterator
+    # This value equals the index of <blank> in `specials``
+    # when doing build_vocab_from_iterator
     pad_idx = vocab_tgt[padding]
 
     model = translation_model(
         len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
     )
-    criterion = LabelSmoothing(size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1)
+    criterion = LabelSmoothing(
+        size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1
+    )
     train_dataloader, valid_dataloader = create_data_loaders(
         device,
         vocab_src,
@@ -43,7 +46,10 @@ def train_worker(
         max_padding=model_args.max_padding,
     )
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=training_args.base_lr, betas=(0.9, 0.98), eps=1e-9
+        model.parameters(),
+        lr=training_args.base_lr,
+        betas=(0.9, 0.98),
+        eps=1e-9,
     )
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer=optimizer,
@@ -98,8 +104,10 @@ def train_model(
     vocab_tgt: Vocab,
 ) -> nn.Module:
     if training_args.distributed:
-        print(f"Distributed mode is enabled, training in parallel.")
-        model = train_distributed_model(model_args, training_args, vocab_src, vocab_tgt)
+        print("Distributed mode is enabled, training in parallel.")
+        model = train_distributed_model(
+            model_args, training_args, vocab_src, vocab_tgt
+        )
     else:
         model = train_worker(model_args, training_args, vocab_src, vocab_tgt)
     return model

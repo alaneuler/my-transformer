@@ -16,7 +16,9 @@ model = make_model(V, V, N=2)
 a, t = model_parameter_size(model)
 print("Model total parameters:", a)
 print("Model trainable parameters:", t)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.5, betas=(0.9, 0.98), eps=1e-9)
+optimizer = torch.optim.Adam(
+    model.parameters(), lr=0.5, betas=(0.9, 0.98), eps=1e-9
+)
 lr_scheduler = LambdaLR(
     optimizer=optimizer,
     lr_lambda=lambda step: rate(
@@ -46,7 +48,9 @@ for epoch in range(10):
         mode="eval",
     )
     print(
-        "Validation result: total Loss: %.2f" % total_loss, "Total token:", total_token
+        "Validation result: total Loss: %.2f" % total_loss,
+        "Total token:",
+        total_token,
     )
 
 model.eval()
