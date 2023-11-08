@@ -15,7 +15,7 @@ Based on tokenizers, we build vocabulary from torchtext (especially, the `torcht
 
 ### Processing Flow
 1. A batch (in the form of list) is fetched from train data.
-2. In collate_batch, one batch is tokenized and padding (shape $\text{batch}\times\text{max\_padding}$).
+2. In collate_batch, one batch is tokenized and padded (shape $\text{batch}\times\text{max\_padding}$).
 
 ### Data
 The train data comes from [EMNLP 2018](https://statmt.org/wmt18/translation-task.html). The English to Chinese task:

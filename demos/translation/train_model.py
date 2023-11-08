@@ -11,6 +11,7 @@ from train.label_smoothing import LabelSmoothing
 from train.learning_rate import rate
 from train.loss import SimpleLossCompute
 from train.routine import run_epoch
+from utils import GeneratorWithLength
 
 
 def translation_model(vocab_src_len, vocab_tgt_len, d_model, N) -> nn.Module:
@@ -24,7 +25,7 @@ def train_worker(
     vocab_tgt: Vocab,
 ) -> nn.Module:
     device = torch.device(training_args.device)
-    print(f"Training process starting, using {device} device.")
+    print(f"Training process starting, using device {device}.")
 
     # This value equals the index of <blank> in `specials``
     # when doing build_vocab_from_iterator
@@ -32,7 +33,7 @@ def train_worker(
 
     model = translation_model(
         len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
-    )
+    ).to(device)
     criterion = LabelSmoothing(
         size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1
     )
@@ -64,7 +65,10 @@ def train_worker(
         model.train()
         run_epoch(
             model,
-            (Batch(b[0], b[1], pad_idx) for b in train_dataloader),
+            GeneratorWithLength(
+                (Batch(b[0], b[1], pad_idx) for b in train_dataloader),
+                len(train_dataloader),
+            ),
             loss_compute,
             optimizer,
             lr_scheduler,
@@ -75,7 +79,7 @@ def train_worker(
         model.eval()
         total_loss, total_token = run_epoch(
             model,
-            (Batch(b[0], b[1], pad_idx) for b in valid_dataloader),
+            [Batch(b[0], b[1], pad_idx) for b in valid_dataloader],
             loss_compute,
             None,
             None,

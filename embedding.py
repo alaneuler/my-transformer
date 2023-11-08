@@ -4,7 +4,7 @@ from torch import nn
 
 
 class Embedding(nn.Module):
-    def __init__(self, d_model, vocab):
+    def __init__(self, d_model: int, vocab: int):
         super().__init__()
         self.lut = nn.Embedding(vocab, d_model)
         self.d_model = d_model

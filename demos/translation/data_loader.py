@@ -33,8 +33,7 @@ def collate_batch(
             )
         if unk_idx in tokens_idx:
             raise RuntimeError(
-                f"unk token in tokens\ntokens: {tokens}\n"
-                + "tokens_idx: {tokens_idx}"
+                f"unk token in tokens: {tokens}\n, tokens_idx: {tokens_idx}"
             )
 
     src_list, tgt_list = [], []
@@ -101,6 +100,7 @@ def create_data_loader(
             batch, device, vocab_src, vocab_tgt, max_padding=max_padding
         )
 
+    # Use map style dataset to support distributed training
     data_iter_map = to_map_style_dataset(data_iter)
     data_sampler = DistributedSampler(data_iter_map) if is_distributed else None
     data_loader = DataLoader(

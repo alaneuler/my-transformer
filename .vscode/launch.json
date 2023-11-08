@@ -23,7 +23,8 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
-                "PYTHONPATH": "${workspaceFolder}"
+                "PYTHONPATH": "${workspaceFolder}",
+                "CUDA_VISIBLE_DEVICES": "6",
             },
             "args": [
                 "--model_path", "models/zh_en_final.pt",

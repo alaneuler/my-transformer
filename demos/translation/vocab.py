@@ -54,5 +54,5 @@ def load_vocab(
         print("%s already exists, load from it." % vocab_path)
         vocab_src, vocab_tgt = torch.load(vocab_path)
 
-    print("Vocabulary zh size:", len(vocab_src), "en size:", len(vocab_tgt))
+    print(f"Vocabulary zh size: {len(vocab_src)}, en size: {len(vocab_tgt)}")
     return vocab_src, vocab_tgt
