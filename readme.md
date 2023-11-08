@@ -7,10 +7,17 @@ PYTHONPATH=. pytest tests/translation/tokens_test.py::test_try_tokenizer -s
 ```
 
 ## Translation Model
-Uses tokenizers from [spacy](https://spacy.io):
+Uses **tokenizers** from [spacy](https://spacy.io):
 - zh_core_web_sm for Chinese
 - en_core_web_sm for English
 
+Based on tokenizers, we build vocabulary from torchtext (especially, the `torchtext.vocab.Vocab` class).
+
+### Processing Flow
+1. A batch (in the form of list) is fetched from train data.
+2. In collate_batch, one batch is tokenized and padding (shape $\text{batch}\times\text{max_padding}$).
+
+### Data
 The train data comes from [EMNLP 2018](https://statmt.org/wmt18/translation-task.html). The English to Chinese task:
 
 ```bash
