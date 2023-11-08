@@ -6,8 +6,8 @@ from transformers import HfArgumentParser
 from demos.translation.arguments import ModelArguments, TrainingArguments
 from demos.translation.load_model import load_model
 from demos.translation.predict import predict
-from demos.translation.tokenizer import load_vocab
 from demos.translation.train_model import train_model
+from demos.translation.vocab import load_vocab
 
 parser = HfArgumentParser((ModelArguments, TrainingArguments))
 model_args, training_args = parser.parse_args_into_dataclasses()

@@ -3,7 +3,7 @@ from torchtext.vocab import Vocab
 
 from demos.translation.arguments import ModelArguments
 from demos.translation.data_loader import create_data_loader
-from demos.translation.tokenizer import bs, eos, padding
+from demos.translation.vocab import bs, eos, padding
 from inference.greedy import greedy_decode
 from train.data import Batch
 

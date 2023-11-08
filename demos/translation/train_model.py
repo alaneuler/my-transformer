@@ -4,7 +4,7 @@ from torchtext.vocab import Vocab
 
 from demos.translation.arguments import ModelArguments, TrainingArguments
 from demos.translation.data_loader import create_data_loaders
-from demos.translation.tokenizer import padding
+from demos.translation.vocab import padding
 from model import make_model
 from train.data import Batch
 from train.label_smoothing import LabelSmoothing

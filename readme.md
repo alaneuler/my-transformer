@@ -1,4 +1,10 @@
+# My-Transformer
 The code comes from [The Annotated Transformer](https://nlp.seas.harvard.edu/annotated-transformer/).
+
+## Translation Model
+Uses tokenizers from [spacy](https://spacy.io):
+- zh_core_web_sm for Chinese
+- en_core_web_sm for English
 
 The train data comes from [EMNLP 2018](https://statmt.org/wmt18/translation-task.html). The English to Chinese task:
 

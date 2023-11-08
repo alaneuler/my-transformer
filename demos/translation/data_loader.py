@@ -6,14 +6,8 @@ from torchtext.data.functional import to_map_style_dataset
 from torchtext.vocab import Vocab
 
 from demos.translation.data_source import load_train_val_data
-from demos.translation.tokenizer import (
-    bs,
-    eos,
-    padding,
-    tokenize_en,
-    tokenize_zh,
-    unk,
-)
+from demos.translation.tokenizer import tokenize_en, tokenize_zh
+from demos.translation.vocab import bs, eos, padding, unk
 
 
 def collate_batch(

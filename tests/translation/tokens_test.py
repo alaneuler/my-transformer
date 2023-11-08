@@ -1,4 +1,5 @@
-from demos.translation.tokenizer import build_vocabulary, tokenize_zh
+from demos.translation.tokenizer import tokenize_zh
+from demos.translation.vocab import build_vocabulary
 
 
 def token_index():
@@ -8,9 +9,7 @@ def token_index():
                 ("今天天气不错。", "The weather is nice today."),
                 ("你好！", "Hello!"),
                 ("我是一个学生。", "I am a student."),
-            ],
-            [],
-            [],
+            ]
         ),
         min_freq=1,
     )
