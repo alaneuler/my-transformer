@@ -24,14 +24,17 @@
             "justMyCode": false,
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "CUDA_VISIBLE_DEVICES": "6",
+                "CUDA_VISIBLE_DEVICES": "1",
             },
             "args": [
                 "--model_path", "models/zh_en_final.pt",
+                "--max_padding", "256",
+                "--batch_size", "24",
                 "--distributed", "false",
                 "--training_size", "250000",
                 "--validation_size", "2000",
-                "--test_size", "777"
+                "--test_size", "777",
+                "--should_check_tokens", "false"
             ]
         }
     ]

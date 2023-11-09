@@ -17,9 +17,15 @@ specials = [bs, eos, padding, unk]
 
 
 def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
+    max_length = [0, 0]
+
     def yield_tokens(data_iter, tokenizer: Language, index: int):
         for from_to_tuple in tqdm(data_iter):
-            yield tokenizer(from_to_tuple[index])
+            tokens = tokenizer(from_to_tuple[index])
+            token_length = len(tokens)
+            if max_length[index] < token_length:
+                max_length[index] = token_length
+            yield tokens
 
     print("Building Chinese Vocabulary...")
     vocab_src = build_vocab_from_iterator(
@@ -37,6 +43,8 @@ def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
     vocab_src.set_default_index(vocab_src["<unk>"])
     vocab_tgt.set_default_index(vocab_tgt["<unk>"])
 
+    print(f"Max sentence token length for Chinese is {max_length[0]}")
+    print(f"Max sentence token length for English {max_length[1]}.")
     return vocab_src, vocab_tgt
 
 

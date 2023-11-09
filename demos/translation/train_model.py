@@ -45,6 +45,7 @@ def train_worker(
         training_args.validation_size,
         batch_size=training_args.batch_size,
         max_padding=model_args.max_padding,
+        should_check_tokens=training_args.should_check_tokens,
     )
     optimizer = torch.optim.Adam(
         model.parameters(),

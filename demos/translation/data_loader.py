@@ -15,8 +15,8 @@ def collate_batch(
     device,
     vocab_src: Vocab,
     vocab_tgt: Vocab,
-    max_padding=128,
-    should_check_tokens=True,
+    max_padding,
+    should_check_tokens,
 ):
     bs_idx = torch.tensor([vocab_src[bs]], device=device)
     eos_idx = torch.tensor([vocab_src[eos]], device=device)
@@ -92,12 +92,18 @@ def create_data_loader(
     vocab_src,
     vocab_tgt,
     batch_size,
-    max_padding=128,
-    is_distributed=False,
+    max_padding,
+    is_distributed,
+    should_check_tokens,
 ):
     def collate_fn(batch):
         return collate_batch(
-            batch, device, vocab_src, vocab_tgt, max_padding=max_padding
+            batch,
+            device,
+            vocab_src,
+            vocab_tgt,
+            max_padding,
+            should_check_tokens,
         )
 
     # Use map style dataset to support distributed training
@@ -119,9 +125,10 @@ def create_data_loaders(
     vocab_tgt,
     train_size: int,
     val_size: int,
-    batch_size=100,
+    batch_size=32,
     max_padding=128,
     is_distributed=False,
+    should_check_tokens=True,
 ):
     train_iter, val_iter = load_train_val_data(train_size, val_size)
     train_data_loader = create_data_loader(
@@ -132,6 +139,7 @@ def create_data_loaders(
         batch_size,
         max_padding,
         is_distributed,
+        should_check_tokens,
     )
     val_data_loader = create_data_loader(
         val_iter,
@@ -141,5 +149,6 @@ def create_data_loaders(
         batch_size,
         max_padding,
         is_distributed,
+        should_check_tokens,
     )
     return train_data_loader, val_data_loader

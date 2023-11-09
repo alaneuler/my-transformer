@@ -60,3 +60,10 @@ class TrainingArguments:
     base_lr: float = field(default=1.0, metadata={"help": "Base learning rate"})
 
     warmup: int = field(default=3000, metadata={"help": "Warmup steps"})
+
+    should_check_tokens: bool = field(
+        default=True,
+        metadata={
+            "help": "Should check sentence tokens validality and max length"
+        },
+    )
