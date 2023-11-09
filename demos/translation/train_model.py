@@ -1,4 +1,10 @@
+import os
+import random
+
 import torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+from torch.nn.parallel import DistributedDataParallel as DDP
 from torch import nn
 from torchtext.vocab import Vocab
 
@@ -19,21 +25,34 @@ def translation_model(vocab_src_len, vocab_tgt_len, d_model, N) -> nn.Module:
 
 
 def train_worker(
+    gpu,
+    gpu_num,
     model_args: ModelArguments,
     training_args: TrainingArguments,
     vocab_src: Vocab,
     vocab_tgt: Vocab,
+    is_distributed=False,
 ) -> nn.Module:
-    device = torch.device(training_args.device)
+    device = torch.device(training_args.device, gpu)
     print(f"Training process starting, using device {device}.")
+
+    model = translation_model(
+        len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
+    ).to(device)
+    is_main_process = True
+    if is_distributed:
+        dist.init_process_group(
+            "nccl",
+            rank=gpu,
+            world_size=gpu_num
+        )
+        model = DDP(model, device_ids=[gpu])
+        is_main_process = gpu == 0
 
     # This value equals the index of <blank> in `specials``
     # when doing build_vocab_from_iterator
     pad_idx = vocab_tgt[padding]
 
-    model = translation_model(
-        len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
-    ).to(device)
     criterion = LabelSmoothing(
         size=len(vocab_tgt), padding_idx=pad_idx, smoothing=0.1
     )
@@ -45,6 +64,7 @@ def train_worker(
         training_args.validation_size,
         batch_size=training_args.batch_size,
         max_padding=model_args.max_padding,
+        is_distributed=is_distributed,
         should_check_tokens=training_args.should_check_tokens,
     )
     optimizer = torch.optim.Adam(
@@ -62,6 +82,10 @@ def train_worker(
     loss_compute = SimpleLossCompute(model.generator, criterion)
 
     for epoch in range(training_args.num_epochs):
+        if is_distributed:
+            train_dataloader.sampler.set_epoch(epoch)
+            valid_dataloader.sampler.set_epoch(epoch)
+
         print("Epoch:", epoch)
         model.train()
         run_epoch(
@@ -88,8 +112,9 @@ def train_worker(
         )
         print("Validation Average Loss: %.2f" % (total_loss / total_token))
 
-    print("Training process finished.")
-    torch.save(model.state_dict(), model_args.model_path)
+    print(f"Training process on {device} finished.")
+    if is_main_process:
+        torch.save(model.state_dict(), model_args.model_path)
     return model
 
 
@@ -99,7 +124,18 @@ def train_distributed_model(
     vocab_src: Vocab,
     vocab_tgt: Vocab,
 ) -> nn.Module:
-    raise NotImplementedError
+    gpu_num = torch.cuda.device_count()
+    print(f"Number of GPUs detected: {gpu_num}")
+
+    os.environ["MASTER_ADDR"] = "localhost"
+    port = random.randint(10000, 65535)
+    os.environ["MASTER_PORT"] = str(port)
+
+    mp.spawn(
+        train_worker,
+        nprocs=gpu_num,
+        args=(gpu_num, model_args, training_args, vocab_src, vocab_tgt, True),
+    )
 
 
 def train_model(
@@ -114,5 +150,6 @@ def train_model(
             model_args, training_args, vocab_src, vocab_tgt
         )
     else:
+        print("Distributed mode is disabled.")
         model = train_worker(model_args, training_args, vocab_src, vocab_tgt)
     return model
