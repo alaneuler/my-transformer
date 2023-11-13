@@ -27,11 +27,11 @@ Based on tokenizers, we build vocabulary from torchtext (especially, the `torcht
    2. Look up the tokens index in the vocabulary
    3. Prepend the start token index, and append the end token index
    4. Padded to max_padding length with padding token index 
-   5. Result dimension is $\text{batch\_size}\times\text{max\_padding}$, each element is essentially **index** of type int64.
+   5. Result dimension is [batch_size, max_padding], each element is essentially **index** of type int64.
 
 ### asdf
 ```bash
-export PYTHONPATH=. && python demos/translation/main.py --max_padding 256 --batch_size 6 --distributed false --training_size 251777 --validation_size 1000 --test_size 0 --should_check_tokens false --warmup 1200 --model_path models/zh_en_final.single.pt --num_epochs=10
+export PYTHONPATH=. && python demos/translation/main.py --training_size 251777 --validation_size 1000 --model_path models/zh_en_final.single.pt
 ```
 
 ### 
