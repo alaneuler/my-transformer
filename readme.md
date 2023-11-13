@@ -1,11 +1,6 @@
 # My-Transformer
 The code comes from [The Annotated Transformer](https://nlp.seas.harvard.edu/annotated-transformer/).
 
-## Testing
-```bash
-PYTHONPATH=. pytest tests/translation/tokens_test.py::test_try_tokenizer -s
-```
-
 ## Translation Model
 Uses `HfArgumentParser` from transformers for argument parsing.
 
@@ -46,4 +41,9 @@ python demos/translation/main.py \
          --training_size 251777 \
          --validation_size 1000 \
          --model_path models/zh_en_final.single.pt
+```
+
+## Testing
+```bash
+PYTHONPATH=. pytest tests/translation/tokens_test.py::test_try_tokenizer -s
 ```
