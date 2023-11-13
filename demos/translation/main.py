@@ -9,7 +9,7 @@ from demos.translation.predict import predict
 from demos.translation.train_model import train_model
 from demos.translation.vocab import load_vocab
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = HfArgumentParser((ModelArguments, TrainingArguments))
     model_args, training_args = parser.parse_args_into_dataclasses()
     print(model_args)

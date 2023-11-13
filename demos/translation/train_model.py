@@ -4,8 +4,8 @@ import random
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
-from torch.nn.parallel import DistributedDataParallel as DDP
 from torch import nn
+from torch.nn.parallel import DistributedDataParallel as DDP
 from torchtext.vocab import Vocab
 
 from demos.translation.arguments import ModelArguments, TrainingArguments
@@ -39,14 +39,12 @@ def train_worker(
     model = translation_model(
         len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
     ).to(device)
+    module = model
     is_main_process = True
     if is_distributed:
-        dist.init_process_group(
-            "nccl",
-            rank=gpu,
-            world_size=gpu_num
-        )
+        dist.init_process_group("nccl", rank=gpu, world_size=gpu_num)
         model = DDP(model, device_ids=[gpu])
+        module = model.module
         is_main_process = gpu == 0
 
     # This value equals the index of <blank> in `specials``
@@ -76,7 +74,7 @@ def train_worker(
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer=optimizer,
         lr_lambda=lambda step: rate(
-            step, model_args.d_model, factor=0.1, warmup=training_args.warmup
+            step, model_args.d_model, factor=0.01, warmup=training_args.warmup
         ),
     )
     loss_compute = SimpleLossCompute(model.generator, criterion)
@@ -111,10 +109,12 @@ def train_worker(
             mode="eval",
         )
         print("Validation Average Loss: %.2f" % (total_loss / total_token))
+        torch.cuda.empty_cache()
 
     print(f"Training process on {device} finished.")
+    # Save only from the main process.
     if is_main_process:
-        torch.save(model.state_dict(), model_args.model_path)
+        torch.save(module.state_dict(), model_args.model_path)
     return model
 
 
@@ -151,5 +151,7 @@ def train_model(
         )
     else:
         print("Distributed mode is disabled.")
-        model = train_worker(model_args, training_args, vocab_src, vocab_tgt)
+        model = train_worker(
+            0, 1, model_args, training_args, vocab_src, vocab_tgt
+        )
     return model

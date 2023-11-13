@@ -12,5 +12,5 @@ def load_model(
     model = translation_model(
         len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
     )
-    model.load_state_dict(torch.load(model_args.model_name_or_path))
+    model.load_state_dict(torch.load(model_args.model_path))
     return model

@@ -18,27 +18,33 @@ def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
             break
         if chr == bs:
             continue
-        if chr == "," or chr == ".":
+        if chr == "," or chr == "." or chr == "?":
             result += chr
         else:
             result += " " + chr
-    return result
+    return result[1:]
 
 
 def predict(
     model, model_args: ModelArguments, vocab_src: Vocab, vocab_tgt: Vocab
 ):
     pad_idx = vocab_tgt[padding]
-    test_iter = [("当然，现在的情况和1989年的情况明显不同了。", ""), ("当富人不再那么富了，穷人就会更穷。", "")]
-    data_loader = create_data_loader(
-        test_iter, torch.device("cpu"), vocab_src, vocab_tgt, 1
-    )
-
-    for i, test_item in enumerate(data_loader):
-        b = Batch(test_item[0], test_item[1], pad_idx)
-        output = greedy_decode(
-            model, b.src, b.src_mask, vocab_tgt[bs], model_args.max_padding
+    while True:
+        query = input("Input a Chinese sentence to translate:\n")
+        data = create_data_loader(
+            [(query, "")],
+            torch.device("cpu"),
+            vocab_src,
+            vocab_tgt,
+            1,
+            model_args.max_padding,
+            False,
+            False,
         )
-        text = concatenate_result(output[0], vocab_tgt, bs, eos, pad_idx)
-        print("Translation of:", test_iter[i][0])
-        print(text)
+        for q in data:
+            b = Batch(q[0], q[1], pad_idx)
+            output = greedy_decode(
+                model, b.src, b.src_mask, vocab_tgt[bs], model_args.max_padding
+            )
+            text = concatenate_result(output[0], vocab_tgt, bs, eos, pad_idx)
+            print(text)
