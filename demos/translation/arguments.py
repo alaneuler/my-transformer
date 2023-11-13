@@ -21,7 +21,7 @@ class ModelArguments:
     )
 
     max_padding: int = field(
-        default=128, metadata={"help": "Maximum length of the sequence length"}
+        default=80, metadata={"help": "Maximum length of the sequence length"}
     )
 
     min_vocab_freq: int = field(
@@ -36,33 +36,31 @@ class TrainingArguments:
 
     validation_size: int = field(metadata={"help": "Validation set size"})
 
-    test_size: int = field(metadata={"help": "Test set size"})
+    test_size: int = field(default=0, metadata={"help": "Test set size"})
 
     device: str = field(
         default="cuda", metadata={"help": "Device for training"}
     )
 
-    batch_size: int = field(
-        default=32, metadata={"help": "Training batch size"}
-    )
+    batch_size: int = field(default=8, metadata={"help": "Training batch size"})
 
     distributed: bool = field(
-        default=True, metadata={"help": "Is the training distributed"}
+        default=False, metadata={"help": "Is the training distributed"}
     )
 
-    num_epochs: int = field(default=8, metadata={"help": "Number of epoch"})
+    num_epochs: int = field(default=12, metadata={"help": "Number of epoch"})
 
     accum_iter: int = field(
-        default=10,
+        default=3,
         metadata={"help": "Number of iterations to accumulate gradient"},
     )
 
     base_lr: float = field(default=1.0, metadata={"help": "Base learning rate"})
 
-    warmup: int = field(default=3000, metadata={"help": "Warmup steps"})
+    warmup: int = field(default=2000, metadata={"help": "Warmup steps"})
 
     should_check_tokens: bool = field(
-        default=True,
+        default=False,
         metadata={
             "help": "Should check sentence tokens validality and max length"
         },
