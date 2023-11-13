@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Tuple
 
@@ -9,6 +10,8 @@ from tqdm import tqdm
 from demos.translation.data_source import load_data
 from demos.translation.tokenizer import tokenize_en, tokenize_zh
 from utils import plot_length_info
+
+logger = logging.getLogger("translationLogger")
 
 bs = "<s>"
 eos = "</s>"
@@ -30,14 +33,14 @@ def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
                 length_info[index][token_length] = 1
             yield tokens
 
-    print("Building Chinese Vocabulary...")
+    logger.info("Building Chinese Vocabulary...")
     vocab_src = build_vocab_from_iterator(
         yield_tokens(load_data(), tokenize_zh, index=0),
         min_freq=min_freq,
         specials=specials,
     )
 
-    print("Building English Vocabulary...")
+    logger.info("Building English Vocabulary...")
     vocab_tgt = build_vocab_from_iterator(
         yield_tokens(load_data(), tokenize_en, index=1),
         min_freq=min_freq,
@@ -70,8 +73,10 @@ def load_vocab(
         )
         torch.save((vocab_src, vocab_tgt), vocab_path)
     else:
-        print("%s already exists, load from it." % vocab_path)
+        logger.info("%s already exists, load from it." % vocab_path)
         vocab_src, vocab_tgt = torch.load(vocab_path)
 
-    print(f"Vocabulary zh size: {len(vocab_src)}, en size: {len(vocab_tgt)}")
+    logger.info(
+        f"Vocabulary zh size: {len(vocab_src)}, en size: {len(vocab_tgt)}"
+    )
     return vocab_src, vocab_tgt

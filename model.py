@@ -1,4 +1,5 @@
 import copy
+import logging.config
 
 from torch import nn
 
@@ -11,6 +12,9 @@ from ffn import PositionwiseFeedForward
 from layer import Generator
 from positional_encoding import PositionalEncoding
 from utils import model_parameter_size
+
+logging.config.fileConfig("logging.ini")
+logger = logging.getLogger("translationLogger")
 
 
 def make_model(
@@ -33,6 +37,6 @@ def make_model(
             nn.init.xavier_uniform_(p)
 
     total_params, trainable_params = model_parameter_size(model)
-    print("Total parameters:", total_params)
-    print("Trainable parameters:", trainable_params)
+    logger.info("Total parameters:", total_params)
+    logger.info("Trainable parameters:", trainable_params)
     return model

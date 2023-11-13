@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 
@@ -19,6 +20,8 @@ from train.loss import SimpleLossCompute
 from train.routine import run_epoch
 from utils import GeneratorWithLength
 
+logger = logging.getLogger("translationLogger")
+
 
 def translation_model(vocab_src_len, vocab_tgt_len, d_model, N) -> nn.Module:
     return make_model(vocab_src_len, vocab_tgt_len, d_model=d_model, N=N)
@@ -34,7 +37,7 @@ def train_worker(
     is_distributed=False,
 ) -> nn.Module:
     device = torch.device(training_args.device, gpu)
-    print(f"Training process starting, using device {device}.")
+    logger.info(f"Training process starting, using device {device}.")
 
     model = translation_model(
         len(vocab_src), len(vocab_tgt), model_args.d_model, model_args.N
@@ -108,10 +111,12 @@ def train_worker(
             None,
             mode="eval",
         )
-        print("Validation Average Loss: %.2f" % (total_loss / total_token))
+        logger.info(
+            "Validation Average Loss: %.2f" % (total_loss / total_token)
+        )
         torch.cuda.empty_cache()
 
-    print(f"Training process on {device} finished.")
+    logger.info(f"Training process on {device} finished.")
     # Save only from the main process.
     if is_main_process:
         torch.save(module.state_dict(), model_args.model_path)
@@ -125,7 +130,7 @@ def train_distributed_model(
     vocab_tgt: Vocab,
 ) -> nn.Module:
     gpu_num = torch.cuda.device_count()
-    print(f"Number of GPUs detected: {gpu_num}")
+    logger.info(f"Number of GPUs detected: {gpu_num}")
 
     os.environ["MASTER_ADDR"] = "localhost"
     port = random.randint(10000, 65535)
@@ -145,12 +150,12 @@ def train_model(
     vocab_tgt: Vocab,
 ) -> nn.Module:
     if training_args.distributed:
-        print("Distributed mode is enabled, training in parallel.")
+        logger.info("Distributed mode is enabled, training in parallel.")
         model = train_distributed_model(
             model_args, training_args, vocab_src, vocab_tgt
         )
     else:
-        print("Distributed mode is disabled.")
+        logger.info("Distributed mode is disabled.")
         model = train_worker(
             0, 1, model_args, training_args, vocab_src, vocab_tgt
         )

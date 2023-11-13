@@ -6,3 +6,4 @@ data/
 models/
 *.png
 nohup.out
+logs/

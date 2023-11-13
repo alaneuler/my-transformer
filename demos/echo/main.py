@@ -1,3 +1,5 @@
+import logging
+
 import torch
 from torch.optim.lr_scheduler import LambdaLR
 
@@ -10,12 +12,14 @@ from train.loss import SimpleLossCompute
 from train.routine import run_epoch
 from utils import model_parameter_size
 
+logger = logging.getLogger("echoLogger")
+
 V = 11
 criterion = LabelSmoothing(size=V)
 model = make_model(V, V, N=2)
 a, t = model_parameter_size(model)
-print("Model total parameters:", a)
-print("Model trainable parameters:", t)
+logger.info("Model total parameters:", a)
+logger.info("Model trainable parameters:", t)
 optimizer = torch.optim.Adam(
     model.parameters(), lr=0.5, betas=(0.9, 0.98), eps=1e-9
 )
@@ -47,7 +51,7 @@ for epoch in range(10):
         None,
         mode="eval",
     )
-    print(
+    logger.info(
         "Validation result: total Loss: %.2f" % total_loss,
         "Total token:",
         total_token,
