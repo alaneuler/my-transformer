@@ -32,11 +32,10 @@ if __name__ == "__main__":
         logger.info(
             f"Model {model_args.model_path} does not exist, needs to train."
         )
-        model = train_model(model_args, training_args, vocab_src, vocab_tgt)
+        train_model(model_args, training_args, vocab_src, vocab_tgt)
     else:
         logger.info(
             f"Model {model_args.model_path} already exists, load from it."
         )
-        model = load_model(model_args, vocab_src, vocab_tgt)
-
+    model = load_model(model_args, vocab_src, vocab_tgt)
     predict(model, model_args, vocab_src, vocab_tgt)

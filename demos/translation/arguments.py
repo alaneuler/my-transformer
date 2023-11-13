@@ -32,9 +32,13 @@ class ModelArguments:
 
 @dataclass
 class TrainingArguments:
-    training_size: int = field(metadata={"help": "Training set size"})
+    training_size: int = field(
+        default=0, metadata={"help": "Training set size"}
+    )
 
-    validation_size: int = field(metadata={"help": "Validation set size"})
+    validation_size: int = field(
+        default=0, metadata={"help": "Validation set size"}
+    )
 
     test_size: int = field(default=0, metadata={"help": "Test set size"})
 

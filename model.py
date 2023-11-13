@@ -37,6 +37,6 @@ def make_model(
             nn.init.xavier_uniform_(p)
 
     total_params, trainable_params = model_parameter_size(model)
-    logger.info("Total parameters:", total_params)
-    logger.info("Trainable parameters:", trainable_params)
+    logger.info(f"Total parameters: {total_params}")
+    logger.info(f"Trainable parameters: {trainable_params}")
     return model

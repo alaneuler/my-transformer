@@ -73,7 +73,7 @@ def load_vocab(
         )
         torch.save((vocab_src, vocab_tgt), vocab_path)
     else:
-        logger.info("%s already exists, load from it." % vocab_path)
+        logger.info(f"{vocab_path} already exists, load from it.")
         vocab_src, vocab_tgt = torch.load(vocab_path)
 
     logger.info(

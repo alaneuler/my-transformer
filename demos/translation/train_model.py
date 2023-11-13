@@ -35,7 +35,7 @@ def train_worker(
     vocab_src: Vocab,
     vocab_tgt: Vocab,
     is_distributed=False,
-) -> nn.Module:
+):
     device = torch.device(training_args.device, gpu)
     logger.info(f"Training process starting, using device {device}.")
 
@@ -120,7 +120,6 @@ def train_worker(
     # Save only from the main process.
     if is_main_process:
         torch.save(module.state_dict(), model_args.model_path)
-    return model
 
 
 def train_distributed_model(
@@ -128,7 +127,7 @@ def train_distributed_model(
     training_args: TrainingArguments,
     vocab_src: Vocab,
     vocab_tgt: Vocab,
-) -> nn.Module:
+):
     gpu_num = torch.cuda.device_count()
     logger.info(f"Number of GPUs detected: {gpu_num}")
 
@@ -148,15 +147,10 @@ def train_model(
     training_args: TrainingArguments,
     vocab_src: Vocab,
     vocab_tgt: Vocab,
-) -> nn.Module:
+):
     if training_args.distributed:
         logger.info("Distributed mode is enabled, training in parallel.")
-        model = train_distributed_model(
-            model_args, training_args, vocab_src, vocab_tgt
-        )
+        train_distributed_model(model_args, training_args, vocab_src, vocab_tgt)
     else:
         logger.info("Distributed mode is disabled.")
-        model = train_worker(
-            0, 1, model_args, training_args, vocab_src, vocab_tgt
-        )
-    return model
+        train_worker(0, 1, model_args, training_args, vocab_src, vocab_tgt)

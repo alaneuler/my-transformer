@@ -18,7 +18,7 @@ def concatenate_result(model_output, vocab_tgt, bs, eos, pad_idx):
             break
         if chr == bs:
             continue
-        if chr == "," or chr == "." or chr == "?":
+        if chr == "," or chr == "." or chr == "?" or chr == "!" or chr == "’s":
             result += chr
         else:
             result += " " + chr

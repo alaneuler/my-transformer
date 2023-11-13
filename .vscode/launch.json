@@ -24,7 +24,7 @@
             "justMyCode": false,
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
-                "CUDA_VISIBLE_DEVICES": "1,2,3",
+                "CUDA_VISIBLE_DEVICES": "1,2",
             },
             "args": [
                 "--model_path", "models/zh_en_final.parallel.pt",
@@ -50,6 +50,21 @@
                 "--model_path", "models/zh_en_final.single.pt",
                 "--training_size", "251777",
                 "--validation_size", "1000"
+            ]
+        },
+        {
+            "name": "zh-en Translation (Predict)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/demos/translation/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "CUDA_VISIBLE_DEVICES": "3",
+            },
+            "args": [
+                "--model_path", "models/zh_en_final.single.pt.old"
             ]
         }
     ]

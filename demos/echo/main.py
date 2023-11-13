@@ -18,8 +18,8 @@ V = 11
 criterion = LabelSmoothing(size=V)
 model = make_model(V, V, N=2)
 a, t = model_parameter_size(model)
-logger.info("Model total parameters:", a)
-logger.info("Model trainable parameters:", t)
+logger.info(f"Model total parameters: {a}")
+logger.info(f"Model trainable parameters: {t}")
 optimizer = torch.optim.Adam(
     model.parameters(), lr=0.5, betas=(0.9, 0.98), eps=1e-9
 )
@@ -51,11 +51,8 @@ for epoch in range(10):
         None,
         mode="eval",
     )
-    logger.info(
-        "Validation result: total Loss: %.2f" % total_loss,
-        "Total token:",
-        total_token,
-    )
+    logger.info("Validation result: total Loss: %.2f" % total_loss)
+    logger.info(f"Total token: {total_token}")
 
 model.eval()
 src = torch.LongTensor([[0, 9, 8, 7, 6, 5, 4, 3, 2, 1]])
