@@ -6,8 +6,8 @@ from torch.optim.lr_scheduler import LambdaLR
 from train.learning_rate import rate
 
 
-def example_learning_schedule():
-    opts = [[512, 1, 4000], [512, 1, 8000], [256, 1, 4000]]
+def test_learning_schedule():
+    opts = [[512, 1, 4000], [512, 1, 1200], [256, 1, 4000]]
 
     dummy_model = torch.nn.Linear(1, 1)
     learning_rates = []
@@ -34,9 +34,11 @@ def example_learning_schedule():
             pd.DataFrame(
                 {
                     "Learning Rate": learning_rates[warmup_idx, :],
-                    "model_size & warmup": ["512:4000", "512:8000", "256:4000"][
-                        warmup_idx
-                    ],
+                    "model_size & warmup": [
+                        f"{opts[0][0]}:{opts[0][2]}",
+                        f"{opts[1][0]}:{opts[1][2]}",
+                        f"{opts[2][0]}:{opts[2][2]}",
+                    ][warmup_idx],
                     "step": range(20000),
                 }
             )
@@ -49,6 +51,3 @@ def example_learning_schedule():
         .encode(x="step", y="Learning Rate", color="model_size & warmup:N")
     )
     chart.save("output/learning_schedule.png", ppi=320)
-
-
-example_learning_schedule()
