@@ -1,5 +1,8 @@
 import copy
+from typing import Dict
 
+import matplotlib.pyplot as plt
+import pandas as pd
 import torch
 from torch import nn
 
@@ -39,3 +42,20 @@ class GeneratorWithLength:
 
     def __len__(self):
         return self.length
+
+
+def plot_length_info(length_dict: Dict[int, int], title: str, save_path: str):
+    df = pd.DataFrame(list(length_dict.items()), columns=["length", "freq"])
+    df = df.sort_values(by="length")
+    ax = df.plot(kind="bar", x="length", y="freq")
+    plt.xlabel("Length")
+    plt.ylabel("Frequency")
+    plt.title(title)
+
+    for index, label in enumerate(ax.xaxis.get_ticklabels()):
+        if index % 5 != 0:
+            label.set_visible(False)
+    plt.xticks(rotation=45)
+
+    plt.savefig(save_path)
+    plt.close()

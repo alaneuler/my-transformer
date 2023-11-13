@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from demos.translation.data_source import load_data
 from demos.translation.tokenizer import tokenize_en, tokenize_zh
+from utils import plot_length_info
 
 bs = "<s>"
 eos = "</s>"
@@ -17,14 +18,16 @@ specials = [bs, eos, padding, unk]
 
 
 def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
-    max_length = [0, 0]
+    length_info = [{}, {}]
 
     def yield_tokens(data_iter, tokenizer: Language, index: int):
         for from_to_tuple in tqdm(data_iter):
             tokens = tokenizer(from_to_tuple[index])
             token_length = len(tokens)
-            if max_length[index] < token_length:
-                max_length[index] = token_length
+            if token_length in length_info[index]:
+                length_info[index][token_length] += 1
+            else:
+                length_info[index][token_length] = 1
             yield tokens
 
     print("Building Chinese Vocabulary...")
@@ -43,8 +46,16 @@ def build_vocabulary(load_data, min_freq=2) -> Tuple[Vocab, Vocab]:
     vocab_src.set_default_index(vocab_src["<unk>"])
     vocab_tgt.set_default_index(vocab_tgt["<unk>"])
 
-    print(f"Max sentence token length for Chinese is {max_length[0]}")
-    print(f"Max sentence token length for English {max_length[1]}.")
+    plot_length_info(
+        length_info[0],
+        "Chinese Sentence Token Length Distribution",
+        "output/chinese_length.png",
+    )
+    plot_length_info(
+        length_info[1],
+        "English Sentence Token Length Distribution",
+        "output/english_length.png",
+    )
     return vocab_src, vocab_tgt
 
 
