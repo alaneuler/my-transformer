@@ -29,8 +29,8 @@
             "args": [
                 "--model_path", "models/zh_en_final.parallel.pt",
                 "--distributed", "true",
-                "--training_size", "251777",
-                "--validation_size", "1000",
+                "--training_size", "252277",
+                "--validation_size", "500",
                 "--batch_size", "4",
                 "--num_epochs", "6"
             ]
@@ -48,8 +48,8 @@
             },
             "args": [
                 "--model_path", "models/zh_en_final.single.pt",
-                "--training_size", "251777",
-                "--validation_size", "1000"
+                "--training_size", "252277",
+                "--validation_size", "500"
             ]
         },
         {
