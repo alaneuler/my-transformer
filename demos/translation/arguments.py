@@ -46,7 +46,9 @@ class TrainingArguments:
         default="cuda", metadata={"help": "Device for training"}
     )
 
-    batch_size: int = field(default=8, metadata={"help": "Training batch size"})
+    batch_size: int = field(
+        default=64, metadata={"help": "Training batch size"}
+    )
 
     distributed: bool = field(
         default=False, metadata={"help": "Is the training distributed"}
@@ -55,7 +57,7 @@ class TrainingArguments:
     num_epochs: int = field(default=12, metadata={"help": "Number of epoch"})
 
     accum_iter: int = field(
-        default=3,
+        default=1,
         metadata={"help": "Number of iterations to accumulate gradient"},
     )
 

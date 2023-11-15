@@ -77,7 +77,7 @@ def train_worker(
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer=optimizer,
         lr_lambda=lambda step: rate(
-            step, model_args.d_model, factor=0.01, warmup=training_args.warmup
+            step, model_args.d_model, factor=1, warmup=training_args.warmup
         ),
     )
     loss_compute = SimpleLossCompute(model.generator, criterion)
