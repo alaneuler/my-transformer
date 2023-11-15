@@ -38,12 +38,12 @@ rm -rf training-parallel-nc-v13.tgz training-parallel-nc-v13/
 ```bash
 export PYTHONPATH=. && export CUDA_VISIBLE_DEVICES=3 && \
 python demos/translation/main.py \
-         --training_size 251777 \
-         --validation_size 1000 \
+         --training_size 252277 \
+         --validation_size 500 \
          --model_path models/zh_en_final.single.pt
 ```
 
 ## Testing
 ```bash
-PYTHONPATH=. pytest tests/translation/tokens_test.py::test_try_tokenizer -s
+PYTHONPATH=. pytest -s tests/translation/tokens_test.py::test_try_tokenizer
 ```
