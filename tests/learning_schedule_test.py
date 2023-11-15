@@ -7,7 +7,7 @@ from train.learning_rate import rate
 
 
 def test_learning_schedule():
-    opts = [[512, 1, 4000], [512, 1, 1200], [256, 1, 4000]]
+    opts = [[512, 1, 4000], [512, 1, 2000], [256, 1, 4000]]
 
     dummy_model = torch.nn.Linear(1, 1)
     learning_rates = []
@@ -20,7 +20,7 @@ def test_learning_schedule():
             optimizer=optimizer, lr_lambda=lambda step: rate(step, *example)
         )
         tmp = []
-        for _ in range(20000):
+        for _ in range(50000):
             tmp.append(optimizer.param_groups[0]["lr"])
             optimizer.step()
             lr_scheduler.step()
@@ -39,7 +39,7 @@ def test_learning_schedule():
                         f"{opts[1][0]}:{opts[1][2]}",
                         f"{opts[2][0]}:{opts[2][2]}",
                     ][warmup_idx],
-                    "step": range(20000),
+                    "step": range(50000),
                 }
             )
             for warmup_idx in [0, 1, 2]
